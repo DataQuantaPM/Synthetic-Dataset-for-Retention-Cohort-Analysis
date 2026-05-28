@@ -1,5 +1,5 @@
 ```
-Buatkan synthetic dataset untuk project portfolio Data Analytics dengan studi kasus:
+Buatkan full Python code untuk generate synthetic dataset untuk project portfolio Data Analytics dengan studi kasus:
 
 "Retention & Cohort Analysis for a SaaS Product"
 
@@ -33,6 +33,16 @@ Kolom-kolom tersebut nanti akan dihitung saat analisis menggunakan SQL.
 JANGAN buat validation table terpisah.
 JANGAN export file validation user-level.
 Output hanya raw event dataset CSV.
+
+Gunakan:
+- pandas
+- numpy
+- random
+- datetime
+- np.random.seed(42)
+
+Jangan gunakan external API.
+Jangan gunakan library yang sulit di-install.
 
 ==================================================
 BUSINESS CONTEXT
@@ -185,7 +195,7 @@ Target raw dataset:
 - Jangan paksa jumlah rows tepat 100,000 jika merusak logic data.
 - Lebih penting menjaga realistic behavior daripada angka rows yang terlalu presisi.
 
-Ringkasan yang perlu ditampilkan setelah dataset dibuat:
+Setelah dataset dibuat, print:
 - total rows
 - total unique users
 - average events per user
@@ -309,6 +319,9 @@ Rules:
 9. Paid users bisa tetap aktif lebih lama dibanding free users.
 10. Event_time untuk user yang sama harus logis dan tidak mundur.
 
+Retention should be controlled by weekly survival probability so the final validation table is close to the target retention curve.
+Avoid generating too many users who are active in Week 1 but disappear immediately after, because that creates an unrealistic curve shape.
+
 ==================================================
 RETENTION BOTTLENECK LOGIC
 ==================================================
@@ -316,23 +329,29 @@ RETENTION BOTTLENECK LOGIC
 Tambahkan bottleneck utama yang jelas dan bisa dianalisis.
 
 Main bottleneck:
-Retention turun tajam antara Week 1 dan Week 3.
+Retention turun tajam dari Week 0 ke Week 1, lalu terus turun signifikan sampai Week 3.
 
 Business reasoning:
-Banyak user mencoba produk pada minggu pertama, tetapi gagal mencapai "aha moment" atau tidak cukup menggunakan core feature.
+Banyak user signup dan mencoba produk pada Week 0, tetapi tidak semua kembali pada Week 1.
+Sebagian user yang kembali di Week 1 juga gagal mencapai "aha moment" atau tidak cukup menggunakan core feature, sehingga churn meningkat antara Week 1 dan Week 3.
 
 Expected overall retention pattern kira-kira:
 - Week 0: 100%
-- Week 1: sekitar 60%
-- Week 2: sekitar 42%
-- Week 3: sekitar 30%
-- Week 4: sekitar 23%
-- Week 5: sekitar 18%
-- Week 6: sekitar 14%
-- Week 7: sekitar 11%
-- Week 8: sekitar 9%
+- Week 1: sekitar 60% - 65%
+- Week 2: sekitar 40% - 45%
+- Week 3: sekitar 28% - 33%
+- Week 4: sekitar 21% - 25%
+- Week 5: sekitar 16% - 21%
+- Week 6: sekitar 13% - 17%
+- Week 7: sekitar 10% - 13%
+- Week 8: sekitar 8% - 10%
 
-Setelah Week 8, retention boleh turun lebih lambat atau stabil di angka rendah.
+Important:
+Week 1 retention should NOT be too high.
+Avoid Week 1 retention above 70% overall.
+
+After Week 4, the retention curve should decline more slowly.
+Do not make long-term retention drop too aggressively.
 
 Bottleneck harus lebih kuat untuk:
 - ads users
@@ -347,6 +366,39 @@ Bottleneck harus lebih ringan untuk:
 - users who reached aha moment
 
 Tambahkan noise kecil per user dan per cohort agar pattern tidak terlalu sempurna.
+
+==================================================
+RETENTION CURVE SHAPE CONTROL
+==================================================
+
+Pastikan bentuk retention curve mengikuti pola yang realistis:
+
+1. Week 0 harus 100% karena semua user signup.
+2. Week 1 harus menunjukkan drop awal yang jelas.
+   Target Week 1 overall retention sekitar 60% - 65%.
+   Jangan sampai Week 1 retention mendekati 75% atau lebih.
+3. Week 2 dan Week 3 harus menjadi periode bottleneck utama.
+   Banyak user yang belum mencapai aha moment harus churn pada periode ini.
+4. Setelah Week 4, retention harus turun lebih lambat.
+   User yang masih aktif setelah Week 4 cenderung lebih engaged.
+5. Long-term retention tidak boleh terlalu rendah.
+   Target Week 8 overall retention sekitar 8% - 10%.
+6. Retention curve tidak boleh terlalu sempurna.
+   Tambahkan noise kecil per source, plan, dan cohort.
+
+Gunakan retention probability yang mengontrol survival user per week, bukan hanya memilih last_active_week secara random tanpa mempertahankan bentuk curve.
+
+Target approximate retention overall:
+- Week 1: 60% - 65%
+- Week 2: 40% - 45%
+- Week 3: 28% - 33%
+- Week 4: 21% - 25%
+- Week 8: 8% - 10%
+
+Jika hasil validation menunjukkan:
+- Week 1 > 70%, turunkan early retention probability.
+- Week 4 < 20%, naikkan mid-term retention probability.
+- Week 8 < 7%, naikkan long-term retention floor.
 
 ==================================================
 SOURCE RETENTION LOGIC
@@ -564,14 +616,14 @@ Dirty data guardrails:
 - Dirty data hanya boleh terjadi pada categorical fields dan sebagian duplicate events.
 
 ==================================================
-QUALITY CHECK SUMMARY
+PYTHON VALIDATION SUMMARY
 ==================================================
 
-Setelah dataset dibuat, tampilkan ringkasan kualitas dataset.
+Setelah generate dataset, tambahkan Python validation summary dengan print saja.
 
 Jangan export validation table.
 
-Tampilkan:
+Print untuk raw dataset:
 
 1. Total rows
 2. Total unique users
@@ -590,7 +642,7 @@ Tampilkan:
 15. Check apakah signup event adalah event pertama user
 16. Check apakah raw dataset tidak memiliki kolom turunan yang dilarang
 
-Tambahkan juga ringkasan internal tanpa export file:
+Tambahkan juga printed validation summary internal, tanpa export file:
 
 1. Approximate overall retention by cohort_index:
    - cohort_index
@@ -624,7 +676,7 @@ Tambahkan juga ringkasan internal tanpa export file:
    - estimated churn_week distribution
 
 Catatan:
-Quality check summary boleh menggunakan internal calculations, tetapi raw dataset tetap tidak boleh berisi kolom cohort/churn/aha turunan.
+Validation summary boleh menggunakan internal calculations di Python, tetapi raw dataset tetap tidak boleh berisi kolom cohort/churn/aha turunan.
 
 ==================================================
 EXPECTED SQL ANALYSIS USE CASE
@@ -673,22 +725,28 @@ Dataset raw ini nantinya akan dianalisis menggunakan SQL untuk menghitung:
 7. Business recommendations.
 
 ==================================================
-DATASET QUALITY REQUIREMENTS
+CODE QUALITY REQUIREMENTS
 ==================================================
 
-1. Dataset harus rapi dan realistis.
-2. Event behavior harus mengikuti logic yang masuk akal.
-3. Event_time harus bertipe datetime.
-4. Tidak boleh ada event sebelum signup event.
-5. Signup event harus menjadi event pertama user.
-6. User progression harus masuk akal.
-7. Retention curve harus menurun secara natural tapi tidak terlalu sempurna.
-8. Source effect, plan effect, dan aha moment effect harus terlihat tetapi tidak terlalu deterministik.
-9. Total rows harus mendekati 100,000.
-10. Jangan membuat dataset terlalu kecil.
-11. Dirty data tidak boleh merusak core retention logic.
-12. Raw dataset harus tetap terlihat seperti event-level production data.
-13. Analytical derived fields harus dihitung di SQL, bukan disimpan di raw dataset.
-14. Jangan export validation table.
-15. Output hanya satu CSV raw dataset.
+1. Kode harus rapi dan mudah dibaca.
+2. Tambahkan komentar untuk setiap logic besar.
+3. Gunakan function jika diperlukan agar kode tidak berantakan.
+4. Gunakan np.random.seed(42) agar reproducible.
+5. Pastikan event_time bertipe datetime.
+6. Pastikan tidak ada event sebelum signup event.
+7. Pastikan signup event adalah event pertama user.
+8. Pastikan user progression masuk akal.
+9. Pastikan retention curve menurun secara natural tapi tidak terlalu sempurna.
+10. Pastikan source effect, plan effect, dan aha moment effect terlihat tetapi tidak terlalu deterministik.
+11. Pastikan total rows mendekati 100,000.
+12. Jangan membuat dataset terlalu kecil.
+13. Jangan membuat dirty data merusak core retention logic.
+14. Raw dataset harus tetap terlihat seperti event-level production data.
+15. Analytical derived fields harus dihitung di SQL, bukan disimpan di raw dataset.
+16. Jangan export validation table.
+17. Output hanya satu CSV raw dataset.
+18. Jangan gunakan external API.
+19. Jangan gunakan library selain pandas, numpy, random, datetime jika tidak perlu.
+
+Tolong buatkan full Python code berdasarkan semua spesifikasi di atas.
 ```
