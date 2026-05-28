@@ -58,10 +58,10 @@ Each dataset folder contains:
 
 ## Available Datasets
 
-| No. | Dataset Project | Main Analysis Use Case |
-|---|---|---|
-| 01 | SaaS Funnel Analysis | Funnel conversion, drop-off analysis, revenue leakage |
-| 02 | SaaS Retention & Cohort Analysis | Retention, churn, cohort analysis, aha moment analysis |
+| No. | Dataset Project | Main Analysis Use Case | Link Access |
+|---|---|---|---|
+| 01 | SaaS Funnel Analysis | Funnel conversion, drop-off analysis, revenue leakage | link |
+| 02 | SaaS Retention & Cohort Analysis | Retention, churn, cohort analysis, aha moment analysis | link |
 
 More datasets may be added in the future.
 
