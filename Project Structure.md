@@ -28,8 +28,6 @@ synthetic-analytics-dataset-generator-prompts/
     └── dataset.csv
 ```
 
----
-
 The repository is organized by dataset case study:
 
 - `README.md`  
