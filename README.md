@@ -6,7 +6,11 @@ This repository is created to help data analytics learners build realistic datas
 
 Instead of only searching for datasets on Kaggle or other public sources, this repo shows that you can also design and generate your own dataset using a structured prompt and Python.
 
+<br>
+
 ---
+
+<br>
 
 ## Why This Repository Exists
 
@@ -28,7 +32,11 @@ The goal is not to create random dummy data.
 
 The goal is to create datasets that can support realistic analytics practice.
 
+<br>
+
 ---
+
+<br>
 
 ## What This Repository Contains
 
@@ -42,7 +50,11 @@ Each dataset folder contains:
 | `generate_dataset.py` | Python script used to generate the dataset |
 | `dataset.csv` | Generated synthetic dataset |
 
+<br>
+
 ---
+
+<br>
 
 ## Available Datasets
 
@@ -53,7 +65,11 @@ Each dataset folder contains:
 
 More datasets may be added in the future.
 
+<br>
+
 ---
+
+<br>
 
 ## How to Use This Repository
 
@@ -112,7 +128,11 @@ You can use the generated dataset to practice:
 - dashboard creation
 - business insight writing
 
+<br>
+
 ---
+
+<br>
 
 ## What Makes These Datasets More Realistic
 
@@ -133,7 +153,11 @@ Depending on the project, the datasets may include:
 
 The datasets are synthetic, but they are designed to behave closer to real analytics data than random dummy rows.
 
+<br>
+
 ---
+
+<br>
 
 ## Important Note About Synthetic Data
 
@@ -154,7 +178,11 @@ Do not present these datasets as real company datasets.
 
 If you use them in a portfolio project, be transparent that the data is synthetic and generated for learning purposes.
 
+<br>
+
 ---
+
+<br>
 
 ## Recommended Portfolio Workflow
 
@@ -174,7 +202,11 @@ The most important part is not just the dataset.
 
 The most important part is how you use the dataset to answer a business question.
 
+<br>
+
 ---
+
+<br>
 
 ## Example Project Questions
 
@@ -195,7 +227,11 @@ You can use these datasets to answer questions such as:
 - Do users who use core features early retain better?
 - Which segment should be prioritized for retention improvement?
 
+<br>
+
 ---
+
+<br>
 
 ## Tools You Can Use
 
@@ -213,7 +249,11 @@ The Python scripts are used only to generate the synthetic datasets.
 
 The actual analysis can be done using any analytics tool.
 
+<br>
+
 ---
+
+<br>
 
 ## Who This Repository Is For
 
@@ -226,7 +266,11 @@ This repository is useful for:
 - people who cannot find the right public dataset
 - learners who want to practice realistic business analysis
 
+<br>
+
 ---
+
+<br>
 
 ## Limitations
 
@@ -242,7 +286,11 @@ They may not fully capture:
 
 The datasets are designed for practice, not for real business decision-making.
 
+<br>
+
 ---
+
+<br>
 
 ## How to Customize the Prompts
 
@@ -263,7 +311,11 @@ For example, you can change:
 
 If you customize the prompt, always validate the generated dataset before using it in your analysis.
 
+<br>
+
 ---
+
+<br>
 
 ## Final Thought
 
