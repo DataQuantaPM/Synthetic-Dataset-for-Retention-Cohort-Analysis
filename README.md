@@ -1,1 +1,1 @@
-# synthetic-analytics-dataset-generator-prompts
+# Synthetic analytics dataset generator prompts
