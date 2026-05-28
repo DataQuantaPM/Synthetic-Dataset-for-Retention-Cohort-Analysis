@@ -1,698 +1,520 @@
-# Synthetic-Dataset-for-Retention-Cohort-Analysis
+# Synthetic SaaS Retention Dataset Prompt
 
-```
+## Purpose
 
-Buatkan synthetic dataset untuk project portfolio Data Analytics dengan studi kasus:
+This prompt is designed to generate a realistic synthetic SaaS event dataset for retention and cohort analysis.
 
-"Retention & Cohort Analysis for a SaaS Product"
+The dataset can be used for analytics portfolio projects, SQL practice, dashboarding, and business case analysis.
 
-Dataset ini akan digunakan untuk latihan SQL, Tableau/dashboarding, cohort analysis, retention analysis, churn analysis, feature usage analysis, dan business insight.
+The main goal is to create event-level data that behaves like a real SaaS product system, so learners can practice analyzing user retention, churn, acquisition quality, feature usage, and business impact.
 
-Tujuan utama:
-Membuat event-level SaaS dataset yang realistis untuk menganalisis user retention berdasarkan weekly signup cohort, melihat user churn, membandingkan retention antar segment, dan memahami faktor yang memengaruhi user tetap aktif atau berhenti menggunakan produk.
+---
 
-PENTING:
-Raw dataset harus terlihat seperti production event data, bukan dataset yang sudah penuh dengan metric turunan.
+## Who This Is For
 
-Jangan masukkan kolom turunan seperti:
-- signup_date
-- signup_week
-- cohort_start_date
-- event_week
-- cohort_index
-- max_observable_week
-- churned
-- churn_status
-- churn_week
-- is_core_feature
-- reached_aha_moment
-- final_plan_type
-- last_activity_date
-- total_events
-- total_core_feature_events
+This prompt is best for learners who already understand basic analytics concepts such as:
 
-Kolom-kolom tersebut nanti akan dihitung saat analisis menggunakan SQL.
+- Event-level data
+- Cohort analysis
+- Retention rate
+- Churn analysis
+- SQL aggregation
+- User journey analysis
+- Basic SaaS business logic
 
-JANGAN buat validation table terpisah.
-JANGAN export file validation user-level.
-Output hanya raw event dataset CSV.
+If you are completely new to data analytics, it is better to start with a simpler public dataset first before building a custom synthetic dataset.
 
-==================================================
-BUSINESS CONTEXT
-==================================================
+---
 
-Sebuah SaaS company berhasil mendapatkan banyak user baru, tetapi belum tahu apakah user tersebut tetap aktif setelah signup.
+## What This Prompt Generates
 
-Tim ingin menjawab beberapa pertanyaan:
+The prompt generates a raw SaaS event dataset for a retention and cohort analysis case study.
 
-1. Berapa retention user per weekly signup cohort?
-2. Pada minggu keberapa user paling banyak churn?
-3. Source mana yang menghasilkan user dengan retention terbaik?
-4. Apakah paid users lebih retain dibanding free users?
-5. Apakah early feature usage berhubungan dengan retention yang lebih tinggi?
-6. Segment mana yang harus diprioritaskan untuk retention improvement?
-7. Apakah user yang mencapai "aha moment" lebih mungkin bertahan?
+The dataset is designed to answer questions such as:
 
-Dataset harus dibuat agar bisa mendukung analisis tersebut menggunakan SQL dan Tableau.
+- How does user retention change by weekly signup cohort?
+- Which cohort has the weakest retention?
+- Which acquisition source brings the most retained users?
+- Do paid users retain better than free users?
+- Does early feature usage improve retention?
+- Which user segment should be prioritized for retention improvement?
 
-==================================================
-OUTPUT FILE
-==================================================
+The dataset should be exported as:
 
-Buat 1 file output saja:
-
+```text
 saas_retention_events_raw.csv
 
-Ini adalah raw event dataset utama yang akan dianalisis di SQL.
+This should be the only output file.
 
-Jangan buat file output lain.
+No validation table should be exported.
 
-==================================================
-RAW EVENT DATASET FORMAT
-==================================================
+Expected Raw Dataset Schema
 
-Raw dataset harus berbentuk event-level data.
+The raw dataset should look like production event data, not a pre-aggregated analytics table.
 
-Setiap baris merepresentasikan satu user event.
+Column	Description
+event_id	Unique identifier for each event
+user_id	Unique identifier for each user
+event_time	Timestamp of the event
+event_name	Type of user event
+source	User acquisition source
+device	User device
+country	User country
+plan_type	User plan at the time of the event
+subscription_status	Subscription status at the time of the event
+revenue	Revenue generated from subscription events
 
-Kolom raw dataset yang wajib ada:
+The raw dataset should not include analytical or derived fields such as:
 
-1. event_id
-   - Unique identifier untuk setiap event.
-   - Format: E000001, E000002, dst.
-   - event_id harus tetap unique, termasuk untuk duplicate tracking rows.
+signup_date
+signup_week
+cohort_start_date
+event_week
+cohort_index
+max_observable_week
+churned
+churn_status
+churn_week
+is_core_feature
+reached_aha_moment
 
-2. user_id
-   - Unique identifier untuk setiap user.
-   - Format: U00001, U00002, dst.
+These fields should be calculated later during SQL analysis.
 
-3. event_time
-   - Timestamp event.
-   - Range tanggal: 2026-01-01 sampai 2026-06-30.
-   - Event_time untuk user yang sama harus masuk akal secara kronologis.
-   - Tidak boleh ada event sebelum signup event.
+What Makes This Dataset Realistic
 
-4. event_name
-   - Event aktivitas user.
-   - Gunakan event berikut:
-     - signup
-     - login
-     - dashboard_view
-     - feature_used
-     - report_created
-     - invite_team_member
-     - trial_started
-     - subscription_started
-     - subscription_cancelled
+This dataset is designed to include realistic SaaS event behavior, not just random rows.
 
-5. source
-   - Acquisition source.
-   - Value utama:
-     - ads
-     - organic
-     - referral
-     - social
+Key realism layers include:
 
-6. device
-   - Device type.
-   - Value utama:
-     - mobile
-     - desktop
-     - tablet
+Sequential user behavior after signup
+Weekly user activity patterns
+Retention decay over time
+Acquisition source differences
+Plan changes over time
+Event-level plan_type and subscription_status
+Early feature usage behavior
+Aha moment logic
+Churn behavior with observation-window awareness
+Messy data such as typos, null values, duplicates, and inconsistent labels
 
-7. country
-   - Value utama:
-     - US
-     - UK
-     - France
-     - Indonesia
-     - India
-     - Australia
-     - Germany
+The dataset should not be too perfect.
 
-8. plan_type
-   - Value utama:
-     - free
-     - trial
-     - basic
-     - pro
+For example:
 
-   PENTING:
-   plan_type harus merepresentasikan user plan pada saat event terjadi, bukan final plan user.
+Not all ads users should be bad
+Not all referral users should be good
+Some free users should still retain
+Some paid users should still churn
+Some users without aha moment should still stay active
+Some users with aha moment should still churn
 
-   Contoh benar:
-   - signup event: plan_type = free
-   - login sebelum trial: plan_type = free
-   - trial_started: plan_type = trial
-   - subscription_started: plan_type = basic/pro
-   - activity setelah subscription_started: plan_type = basic/pro
+The goal is to make the dataset realistic enough for meaningful analysis.
 
-   Jangan broadcast final paid status ke semua event historis.
+Important Analytical Rules
+1. Raw Data Should Stay Raw
 
-9. subscription_status
-   - Value:
-     - free
-     - trial
-     - active
-     - cancelled
+The raw dataset should only contain event-level facts.
 
-   PENTING:
-   subscription_status harus merepresentasikan status pada saat event terjadi, bukan final status user.
+Fields such as cohort index, churn status, and aha moment should be calculated in SQL, not included in the raw dataset.
 
-10. revenue
-    - Revenue hanya muncul untuk event subscription_started.
-    - Jika plan basic, revenue sekitar 30.
-    - Jika plan pro, revenue sekitar 100.
-    - Untuk event lain, revenue = 0.
+This makes the analysis more realistic and demonstrates actual analytical skill.
 
-Jangan masukkan kolom turunan ke raw dataset seperti:
-- signup_date
-- signup_week
-- cohort_index
-- max_observable_week
-- churned
-- churn_status
-- is_core_feature
-- reached_aha_moment
+2. Plan Type Must Be Event-Level
 
-signup_date nanti harus bisa dihitung di SQL dari event signup pertama milik setiap user.
+plan_type must represent the user's plan at the time of each event, not the user's final plan.
 
-==================================================
-DATA SIZE
-==================================================
+Example:
 
-Target raw dataset:
-- Total event rows sekitar 100,000 rows.
-- Unique users boleh menyesuaikan agar total event rows mendekati 100,000.
-- Target approximate unique users bisa berada di kisaran 8,000 sampai 15,000 users.
-- Jangan paksa jumlah rows tepat 100,000 jika merusak logic data.
-- Lebih penting menjaga realistic behavior daripada angka rows yang terlalu presisi.
+Event	Correct plan_type
+signup	free
+login before trial	free
+trial_started	trial
+subscription_started	basic/pro
+activity after subscription	basic/pro
 
-Ringkasan yang perlu ditampilkan setelah dataset dibuat:
-- total rows
-- total unique users
-- average events per user
-- date range
-- event count by event_name
-- user count by source
-- count by plan_type
-- count by subscription_status
+Do not assign a final paid plan to all historical events.
 
-==================================================
-ANALYTICAL DEFINITIONS
-==================================================
+That would make paid vs free retention analysis biased.
 
-Definisi ini jangan dimasukkan sebagai kolom turunan di raw dataset.
-Definisi ini dipakai untuk membangun logic data dan nanti dihitung ulang di SQL.
+3. Subscription Status Must Be Event-Level
 
-Active user:
-User dianggap active pada suatu minggu jika memiliki minimal satu activity event.
+subscription_status should also represent the user’s status at the time of each event.
 
-Activity events:
-- login
-- dashboard_view
-- feature_used
-- report_created
-- invite_team_member
+Example:
 
-Event berikut tidak dihitung sebagai active usage:
-- signup
-- trial_started
-- subscription_started
-- subscription_cancelled
+Event	Correct subscription_status
+signup	free
+trial_started	trial
+subscription_started	active
+subscription_cancelled	cancelled
+4. Churn Must Respect Observation Window
 
-Retention rate:
-retained_users / cohort_size
+A user should only be considered churned if there is enough time to observe inactivity.
 
-Churn definition:
-User dianggap churn jika setelah pernah aktif, user tidak memiliki activity event lagi selama minimal 3 minggu berturut-turut.
+For example, if a user signs up close to the end of the dataset period, they should not be automatically counted as churned just because they do not have future activity.
 
-Namun churn harus memperhatikan observation window.
-User hanya boleh dianggap churn jika masih ada minimal 3 full observable weeks setelah last activity week.
+The churn logic should respect the observation window.
 
-Aha moment definition:
-User mencapai aha moment jika dalam 7 hari pertama setelah signup melakukan minimal 2 core feature events.
+Later in SQL, churn should be calculated using logic such as:
 
-Core feature events:
-- feature_used
-- report_created
-- invite_team_member
-
-Aha moment harus bisa dihitung ulang dari raw event dataset menggunakan SQL.
-
-==================================================
-CRITICAL ANALYTICAL RULES
-==================================================
-
-1. Churn must respect observation window.
-
-A user can only be considered churned if there are at least 3 full observable weeks after the user's last activity week.
-
-Logic:
 last_activity_cohort_index + 3 <= max_observable_week
 
-Namun jangan masukkan churned atau churn_status ke raw dataset.
-Logic ini hanya digunakan untuk membuat data behavior lebih realistis dan nanti dihitung ulang di SQL.
+This prevents late signup cohorts from being incorrectly counted as churned.
 
-2. plan_type and subscription_status must be event-level snapshots.
-
-For each event row, plan_type and subscription_status must reflect the user's status at the time of the event.
-
-Do not use final plan_type for all historical events.
-
-3. event_id must remain unique.
+5. Event ID Must Remain Unique
 
 Duplicate or near-duplicate tracking rows should receive a new event_id.
 
-Duplicate tracking row logic:
-- same user_id
-- same or similar event_name
-- same or very close event_time
-- same source/device/country
-- new unique event_id
+This simulates double-tracking issues without breaking event ID uniqueness.
 
-This simulates double tracking without breaking event_id uniqueness.
+A duplicate tracking row may have:
 
-4. Every user must have exactly one recoverable signup event.
+Same user_id
+Same or similar event_name
+Same or very close event_time
+Same source/device/country
+New unique event_id
+Dataset Size
 
-Signup is required for cohort analysis.
-Dirty data can affect event_name slightly, such as "sign_up", but it must be recoverable during cleaning.
+Target size:
 
-Do not create users without signup event.
-Do not create missing user_id.
-Do not create missing event_time.
+Around 100,000 event rows
+Unique users can adjust naturally
+Approximate user count can be around 8,000–15,000 users
 
-5. Retention calculations should exclude non-observable cohort periods.
+The dataset does not need to be exactly 100,000 rows.
 
-Do not calculate Week N retention if that cohort has not had enough time to be observed.
+Realistic behavior is more important than hitting the exact row count.
 
-This should be handled later in SQL using logic similar to:
-cohort_index <= max_observable_week
+Event Names
 
-Do not add max_observable_week to raw dataset.
+The dataset should include these events:
 
-==================================================
-USER BEHAVIOR LOGIC
-==================================================
+signup
+login
+dashboard_view
+feature_used
+report_created
+invite_team_member
+trial_started
+subscription_started
+subscription_cancelled
 
-Jangan generate data secara random total.
+Activity events for retention analysis:
 
-Dataset harus mengikuti realistic retention behavior.
+login
+dashboard_view
+feature_used
+report_created
+invite_team_member
 
-Rules:
+Non-activity events:
 
-1. Setiap user wajib memiliki event signup.
-2. Signup event harus menjadi event pertama user.
-3. Setelah signup, sebagian user akan aktif lagi pada minggu-minggu berikutnya.
-4. Sebagian user hanya aktif di minggu pertama lalu churn.
-5. Sebagian user retain lebih lama.
-6. Retention secara umum harus menurun dari waktu ke waktu.
-7. User yang retained bisa memiliki beberapa event dalam satu minggu.
-8. User yang churn harus berhenti menghasilkan activity event setelah churn.
-9. Paid users bisa tetap aktif lebih lama dibanding free users.
-10. Event_time untuk user yang sama harus logis dan tidak mundur.
+signup
+trial_started
+subscription_started
+subscription_cancelled
 
-==================================================
-RETENTION BOTTLENECK LOGIC
-==================================================
+This distinction is important because retention should measure whether users return to use the product, not just whether they have administrative subscription events.
 
-Tambahkan bottleneck utama yang jelas dan bisa dianalisis.
+Retention Logic
 
-Main bottleneck:
-Retention turun tajam antara Week 1 dan Week 3.
+The dataset should show natural retention decay over time.
 
-Business reasoning:
-Banyak user mencoba produk pada minggu pertama, tetapi gagal mencapai "aha moment" atau tidak cukup menggunakan core feature.
+Expected overall pattern:
 
-Expected overall retention pattern kira-kira:
-- Week 0: 100%
-- Week 1: sekitar 60%
-- Week 2: sekitar 42%
-- Week 3: sekitar 30%
-- Week 4: sekitar 23%
-- Week 5: sekitar 18%
-- Week 6: sekitar 14%
-- Week 7: sekitar 11%
-- Week 8: sekitar 9%
+Week	Approximate Retention
+Week 0	100%
+Week 1	~60%
+Week 2	~42%
+Week 3	~30%
+Week 4	~23%
+Week 5	~18%
+Week 6	~14%
+Week 7	~11%
+Week 8	~9%
 
-Setelah Week 8, retention boleh turun lebih lambat atau stabil di angka rendah.
+The main bottleneck should happen between Week 1 and Week 3.
 
-Bottleneck harus lebih kuat untuk:
-- ads users
-- social users
-- free users
-- users without aha moment
+This represents users who tried the product early but failed to build a usage habit or reach the product’s core value.
 
-Bottleneck harus lebih ringan untuk:
-- referral users
-- organic users
-- paid users
-- users who reached aha moment
+Aha Moment Logic
 
-Tambahkan noise kecil per user dan per cohort agar pattern tidak terlalu sempurna.
+The dataset should include behavior that allows the analyst to calculate aha moment later in SQL.
 
-==================================================
-SOURCE RETENTION LOGIC
-==================================================
+Aha moment definition:
 
-Source harus memengaruhi retention, tetapi tidak boleh menentukan hasil secara mutlak.
-
-Distribusi source:
-- ads: 40%
-- organic: 30%
-- referral: 20%
-- social: 10%
-
-Logic:
-
-1. Referral
-   - Retention paling tinggi.
-   - User lebih mungkin menggunakan core feature.
-   - User lebih mungkin mencapai aha moment.
-   - User lebih mungkin convert ke paid plan.
-
-2. Organic
-   - Retention cukup kuat.
-   - Behavior stabil.
-   - Conversion ke paid sedang sampai baik.
-   - Core feature usage cukup tinggi.
-
-3. Ads
-   - Volume user paling besar.
-   - Retention lebih rendah.
-   - Banyak user signup tapi cepat churn.
-   - Banyak user tidak mencapai aha moment.
-   - Paid conversion lebih rendah dibanding organic/referral.
-
-4. Social
-   - Volume paling kecil.
-   - Retention paling lemah atau mirip ads.
-   - Banyak user hanya aktif di minggu awal.
-   - Core feature usage lebih rendah.
-
-Realism guardrail:
-- Tidak semua ads users buruk.
-- Tidak semua referral users bagus.
-- Beberapa free users tetap retain.
-- Beberapa paid users tetap churn.
-- Beberapa users without aha moment tetap aktif.
-- Beberapa users with aha moment tetap churn.
-
-Source, plan, dan feature usage harus memengaruhi probabilitas, bukan menentukan hasil secara absolut.
-
-==================================================
-PLAN TYPE AND SUBSCRIPTION LOGIC
-==================================================
-
-Plan type harus memengaruhi retention.
-
-Rules:
-
-1. Free users
-   - Retention paling rendah.
-   - Banyak churn setelah week 1 atau week 2.
-   - Lebih sedikit menggunakan core feature.
-
-2. Trial users
-   - Retention sedang.
-   - Sebagian convert ke basic/pro.
-   - trial_started harus terjadi setelah signup dan setelah user melakukan beberapa activity event.
-
-3. Basic users
-   - Retention lebih tinggi.
-   - Revenue sekitar 30 saat subscription_started.
-
-4. Pro users
-   - Retention paling tinggi.
-   - Revenue sekitar 100 saat subscription_started.
-   - Lebih mungkin menggunakan core feature dan invite_team_member.
-
-Rules tambahan:
-- Tidak semua user mulai trial.
-- Tidak semua trial users convert ke paid subscription.
-- subscription_started hanya boleh terjadi setelah trial_started atau setelah beberapa core feature activity.
-- subscription_cancelled dapat terjadi beberapa minggu setelah subscription_started.
-- Setelah subscription_cancelled, user tidak boleh memiliki subscription_started lagi, kecuali edge case sangat kecil jika ingin dibuat.
-- Setelah subscription_cancelled, subscription_status pada event setelahnya harus "cancelled" jika ada event non-activity administratif.
-- Setelah churn/cancelled, jangan generate activity event reguler lagi kecuali edge case kecil yang realistis.
-
-==================================================
-FEATURE USAGE AND AHA MOMENT LOGIC
-==================================================
-
-Feature usage harus menjadi faktor penting dalam retention.
+A user reaches aha moment if they perform at least 2 core feature events within the first 7 days after signup.
 
 Core feature events:
-- feature_used
-- report_created
-- invite_team_member
 
-Aha moment:
-User dianggap mencapai aha moment jika dalam 7 hari pertama setelah signup melakukan minimal 2 core feature events.
+feature_used
+report_created
+invite_team_member
 
-Logic:
-1. Users who reach aha moment have significantly higher retention after week 2.
-2. Users who do not reach aha moment are more likely to churn between week 1 and week 3.
-3. Referral and organic users are more likely to reach aha moment.
-4. Ads and social users are less likely to reach aha moment.
-5. Paid users usually have higher aha moment rate than free users.
-6. Users who invite team members tend to retain better than users who only login.
+Users who reach aha moment should generally have higher retention after Week 2.
 
-Do not export reached_aha_moment in raw dataset.
-Do not export is_core_feature in raw dataset.
-Both must be calculated later in SQL from event_name and event_time.
+However, this should not be deterministic.
 
-==================================================
-EVENT FREQUENCY LOGIC
-==================================================
+Some users who reach aha moment may still churn, and some users who do not reach aha moment may still remain active.
 
-Untuk user yang retained:
-- Mereka bisa punya beberapa event dalam satu minggu.
-- Activity event bisa berupa login, dashboard_view, feature_used, report_created, invite_team_member.
-- Semakin engaged user, semakin banyak event per minggu.
+Source Behavior Logic
 
-Untuk user yang churn:
-- Mereka berhenti menghasilkan activity event setelah churn.
-- Mereka boleh memiliki subscription_cancelled jika paid user.
+Acquisition source should affect retention, but not determine it completely.
 
-Frequency pattern:
-- Week 0 biasanya lebih banyak activity karena user baru mencoba produk.
-- User yang mencapai aha moment punya event frequency lebih tinggi.
-- Paid users punya event frequency lebih stabil.
-- Free users lebih cepat menurun activity-nya.
+Suggested source distribution:
 
-==================================================
-REVENUE LOGIC
-==================================================
+Source	Approximate Share
+ads	40%
+organic	30%
+referral	20%
+social	10%
 
-Untuk versi pertama, revenue dibuat sederhana.
+Expected behavior:
 
-Revenue muncul pada event subscription_started:
-- basic: sekitar 30
-- pro: sekitar 100
+Referral
+Highest retention
+More likely to use core features
+More likely to reach aha moment
+More likely to convert to paid plan
+Organic
+Strong retention
+Stable behavior
+Moderate to good paid conversion
+Healthy core feature usage
+Ads
+Highest volume
+Lower retention
+More users churn early
+Lower aha moment rate
+Lower paid conversion than organic/referral
+Social
+Lower volume
+Weak retention
+Many users active only in early weeks
+Lower core feature usage
+Plan and Subscription Logic
 
-Non-revenue events:
-- revenue = 0
+Plan type should affect retention.
+
+Expected behavior:
+
+Free Users
+Lowest retention
+Many churn after Week 1 or Week 2
+Lower core feature usage
+Trial Users
+Medium retention
+Some convert to basic/pro
+Trial should happen after signup and some activity
+Basic Users
+Higher retention
+Revenue around $30 on subscription_started
+Pro Users
+Highest retention
+Revenue around $100 on subscription_started
+More likely to use core features and invite team members
+
+Plan and subscription status should change logically over time:
+
+free → trial → basic/pro
+
+or in some cases:
+
+free → basic/pro
+Revenue Logic
+
+For the first version, revenue should be simple.
+
+Revenue should only appear on:
+
+subscription_started
 
 Rules:
-- subscription_started hanya muncul untuk user yang convert ke paid.
-- subscription_started harus terjadi setelah trial_started atau setelah cukup core feature activity.
-- plan_type berubah secara logis:
-  - free → trial → basic/pro
-  - atau free → basic/pro untuk sebagian kecil user
-- subscription_status berubah secara logis:
-  - free
-  - trial
-  - active
-  - cancelled
 
-Jangan tambahkan invoice_paid untuk versi pertama agar dataset tidak terlalu kompleks.
-Revenue analysis akan dianggap simple subscription-start revenue, bukan full recurring revenue.
+Basic plan revenue: around $30
+Pro plan revenue: around $100
+All non-subscription events: revenue = 0
 
-==================================================
-OBSERVATION WINDOW LOGIC
-==================================================
+This dataset does not need full recurring revenue logic yet.
 
-Dataset date range:
-- Start date: 2026-01-01
-- End date: 2026-06-30
+So revenue analysis should be treated as subscription-start revenue, not full recurring revenue.
 
-Pastikan data generation memperhitungkan observation window.
+Dirty Data Logic
+
+The dataset should include realistic data quality issues, but not so much that the analysis becomes unusable.
+
+Include:
+
+Inconsistent or typo values
+
+Examples:
+
+log_in → login
+sign_up → signup
+USA → US
+Indnesia → Indonesia
+Mobile → mobile
+Basic → basic
+Missing values
+
+Some rows can have missing values in:
+
+country
+device
+source
+
+But missing values should not be too many.
+
+Duplicate tracking events
+
+Add around 300–700 duplicate or near-duplicate rows.
+
+Duplicates should have a new unique event_id.
+
+Multi-source users
+
+Add around 50–100 users with more than one source due to tracking or attribution issues.
+
+Later in SQL, first-touch source can be calculated using the first event per user.
+
+Dirty Data Guardrails
+
+Dirty data should not break the core retention logic.
 
 Rules:
-- User yang signup dekat akhir periode dataset tidak boleh dipaksa memiliki event sampai Week 8.
-- User cohort akhir tidak boleh dibuat seolah-olah churn hanya karena belum cukup waktu observasi.
-- Jangan masukkan max_observable_week ke raw dataset.
-- max_observable_week nanti harus dihitung di SQL.
 
-==================================================
-DIRTY DATA / DATA QUALITY ISSUES
-==================================================
+Do not create missing user_id
+Do not create missing event_time
+Every user must have a recoverable signup event
+Signup should remain recoverable even if written as sign_up
+Dirty data should mostly affect categorical fields and duplicate event rows
+Expected SQL Analysis
 
-Tambahkan sedikit data kotor secara realistis, tapi jangan sampai merusak retention logic utama.
+The raw dataset should support the following SQL analysis:
 
-Tambahkan:
+1. Data Cleaning
+Fix log_in → login
+Fix sign_up → signup
+Fix USA → US
+Fix Indnesia → Indonesia
+Fix Mobile → mobile
+Fix Basic → basic
+Handle null source/country/device
+Remove duplicate tracking events
+2. Cohort Fields
 
-1. Typo / inconsistent values:
-   - event_name: "log_in" sebagai typo dari "login" sekitar 1%
-   - event_name: "sign_up" sebagai typo dari "signup" sekitar 0.5%
-   - country: "USA" sebagai inconsistent dari "US" sekitar 1%
-   - country: "Indnesia" sebagai typo dari "Indonesia" sekitar 0.5%
-   - device: "Mobile" sebagai inconsistent dari "mobile" sekitar 2%
-   - plan_type: "Basic" sebagai inconsistent dari "basic" sekitar 1%
+Calculate:
 
-2. Missing values:
-   - beberapa country = None
-   - beberapa device = None
-   - beberapa source = None
-   - Jangan terlalu banyak missing values.
+signup_date
+signup_week
+cohort_start_date
+event_week
+cohort_index
+max_observable_week
+3. Retention Analysis
 
-3. Duplicate events:
-   - sekitar 300–700 rows duplicate atau near-duplicate.
-   - Duplicate harus punya event_id baru.
-   - Duplicate bisa punya user_id, event_name, event_time yang sama atau mirip.
-   - Duplicate jangan terlalu banyak sampai merusak retention table.
+Calculate:
 
-4. Multi-source user:
-   - sekitar 50–100 user memiliki lebih dari satu source karena tracking/attribution issue.
-   - First-touch source nantinya bisa dihitung di SQL berdasarkan event_time pertama.
+Weekly retention
+Cohort retention heatmap
+Retention curve
+Retention by source
+Retention by plan type
+Retention by device/country
+4. Churn Analysis
 
-5. Jangan membuat data terlalu rusak.
-   - Dirty data harus cukup untuk latihan cleaning, bukan membuat analisis tidak bisa dipakai.
+Calculate:
 
-Dirty data guardrails:
-- Jangan buat user_id missing.
-- Jangan buat event_time missing.
-- Setiap user harus tetap memiliki minimal satu signup event yang bisa dipulihkan melalui cleaning.
-- Dirty data hanya boleh terjadi pada categorical fields dan sebagian duplicate events.
+churned
+churn_status
+churn_week
+Churn by source
+Churn by plan type
+5. Aha Moment Analysis
 
-==================================================
-QUALITY CHECK SUMMARY
-==================================================
+Calculate:
 
-Setelah dataset dibuat, tampilkan ringkasan kualitas dataset.
+Core feature usage in first 7 days
+Users who reached aha moment
+Retention of aha moment vs non-aha users
+6. Business Recommendations
 
-Jangan export validation table.
+Use the analysis to answer:
 
-Tampilkan:
+Which users churn fastest?
+Which source brings better retained users?
+Which segment should be prioritized?
+Does early feature usage improve retention?
+What action should the product or growth team take?
+Quality Check Summary
 
-1. Total rows
-2. Total unique users
-3. Average events per user
-4. Date range
-5. Signup users harus sama dengan total unique users setelah memperbaiki sign_up menjadi signup secara internal
-6. Unique event_name values
-7. Count by event_name
-8. Count by source
-9. Count by plan_type
-10. Count by subscription_status
-11. Basic duplicate count
-12. event_id duplicate count harus 0
-13. Missing values per column
-14. Check apakah ada event sebelum signup
-15. Check apakah signup event adalah event pertama user
-16. Check apakah raw dataset tidak memiliki kolom turunan yang dilarang
+After generating the dataset, check:
 
-Tambahkan juga ringkasan internal tanpa export file:
+Total rows are close to 100,000
+Total unique users are reasonable
+Average events per user is realistic
+Date range is correct
+Each user has one recoverable signup event
+Signup is the first event for each user
+There are no events before signup
+event_id is unique
+plan_type reflects the user’s state at the time of event
+Retention declines naturally over time
+Week 1–3 shows a clear retention drop
+Source effects are visible but not deterministic
+Aha moment users retain better than non-aha users
+Dirty data exists but does not break core analysis
+No derived analytics fields are included in the raw dataset
+Limitations
 
-1. Approximate overall retention by cohort_index:
-   - cohort_index
-   - retained_users
-   - cohort_size
-   - retention_rate
+This is a synthetic dataset, not real company data.
 
-2. Retention by source summary:
-   - source
-   - week_1_retention
-   - week_2_retention
-   - week_4_retention
-   - week_8_retention
+It is useful for:
 
-3. Retention by plan_type summary:
-   - plan_type
-   - week_1_retention
-   - week_4_retention
-   - week_8_retention
+Learning
+Portfolio building
+SQL practice
+Dashboarding
+Analytics workflow simulation
 
-4. Aha moment validation:
-   - users who reached aha moment
-   - users who did not reach aha moment
-   - week 4 retention for both groups
+But it should not be treated as evidence of real SaaS behavior.
 
-5. Churn summary:
-   - estimated churned users
-   - estimated churn rate
-   - estimated churned users by source
-   - estimated churned users by plan_type
-   - estimated churn_week distribution
+The assumptions inside the dataset should be reviewed and adjusted depending on the business case.
 
-Catatan:
-Quality check summary boleh menggunakan internal calculations, tetapi raw dataset tetap tidak boleh berisi kolom cohort/churn/aha turunan.
+How to Customize This Prompt
 
-==================================================
-EXPECTED SQL ANALYSIS USE CASE
-==================================================
+You can modify:
 
-Dataset raw ini nantinya akan dianalisis menggunakan SQL untuk menghitung:
+Business context
+Event names
+Date range
+Number of users
+Total event rows
+Retention pattern
+Source distribution
+Dirty data level
+Monetization logic
+Churn definition
+Aha moment definition
+Industry/domain
 
-1. Data cleaning:
-   - fix log_in → login
-   - fix sign_up → signup
-   - fix USA → US
-   - fix Indnesia → Indonesia
-   - fix Mobile → mobile
-   - fix Basic → basic
-   - handle null source/country/device
-   - remove duplicate tracking events
+For example, this structure can be adapted for:
 
-2. Cohort fields:
-   - signup_date
-   - signup_week
-   - cohort_start_date
-   - event_week
-   - cohort_index
-   - max_observable_week
+E-commerce retention
+Fintech app usage
+Marketplace repeat behavior
+Subscription app churn
+HR platform engagement
+Learning platform retention
+Key Reminder
 
-3. Retention:
-   - weekly retention
-   - cohort retention heatmap
-   - retention curve
+Public datasets are useful, but they may not always match the case study you want to build.
 
-4. Churn:
-   - churned
-   - churn_status
-   - churn_week
+A custom synthetic dataset gives you more control over the business problem, data structure, and analytical story.
 
-5. Aha moment:
-   - core feature usage in first 7 days
-   - reached_aha_moment
+However, customization also requires stronger assumptions.
 
-6. Segment analysis:
-   - retention by source
-   - retention by plan_type
-   - retention by country/device
-   - retention by aha moment
+A realistic dataset is not just about generating rows.
 
-7. Business recommendations.
-
-==================================================
-DATASET QUALITY REQUIREMENTS
-==================================================
-
-1. Dataset harus rapi dan realistis.
-2. Event behavior harus mengikuti logic yang masuk akal.
-3. Event_time harus bertipe datetime.
-4. Tidak boleh ada event sebelum signup event.
-5. Signup event harus menjadi event pertama user.
-6. User progression harus masuk akal.
-7. Retention curve harus menurun secara natural tapi tidak terlalu sempurna.
-8. Source effect, plan effect, dan aha moment effect harus terlihat tetapi tidak terlalu deterministik.
-9. Total rows harus mendekati 100,000.
-10. Jangan membuat dataset terlalu kecil.
-11. Dirty data tidak boleh merusak core retention logic.
-12. Raw dataset harus tetap terlihat seperti event-level production data.
-13. Analytical derived fields harus dihitung di SQL, bukan disimpan di raw dataset.
-14. Jangan export validation table.
-15. Output hanya satu CSV raw dataset.
-
-```
+It is about designing behavior that makes sense.
