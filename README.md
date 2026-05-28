@@ -123,8 +123,11 @@ For example:
 
 The goal is to make the dataset realistic enough for meaningful analysis.
 
-Important Analytical Rules
-1. Raw Data Should Stay Raw
+---
+<br>
+
+## Important Analytical Rules
+### 1. Raw Data Should Stay Raw
 
 The raw dataset should only contain event-level facts.
 
@@ -132,35 +135,44 @@ Fields such as cohort index, churn status, and aha moment should be calculated i
 
 This makes the analysis more realistic and demonstrates actual analytical skill.
 
-2. Plan Type Must Be Event-Level
+<br>
+
+### 2. Plan Type Must Be Event-Level
 
 plan_type must represent the user's plan at the time of each event, not the user's final plan.
 
 Example:
 
-Event	Correct plan_type
-signup	free
-login before trial	free
-trial_started	trial
-subscription_started	basic/pro
-activity after subscription	basic/pro
+| Event                       | Correct plan_type |
+| --------------------------- | ----------------- |
+| signup                      | free              |
+| login before trial          | free              |
+| trial_started               | trial             |
+| subscription_started        | basic/pro         |
+| activity after subscription | basic/pro         |
 
 Do not assign a final paid plan to all historical events.
 
 That would make paid vs free retention analysis biased.
 
-3. Subscription Status Must Be Event-Level
+<br>
 
-subscription_status should also represent the user’s status at the time of each event.
+### 3. Subscription Status Must Be Event-Level
+
+`subscription_status` should also represent the user’s status at the time of each event.
 
 Example:
 
-Event	Correct subscription_status
-signup	free
-trial_started	trial
-subscription_started	active
-subscription_cancelled	cancelled
-4. Churn Must Respect Observation Window
+| Event                  | Correct subscription_status |
+| ---------------------- | --------------------------- |
+| signup                 | free                        |
+| trial_started          | trial                       |
+| subscription_started   | active                      |
+| subscription_cancelled | cancelled                   |
+
+<br>
+
+### 4. Churn Must Respect Observation Window
 
 A user should only be considered churned if there is enough time to observe inactivity.
 
@@ -170,11 +182,15 @@ The churn logic should respect the observation window.
 
 Later in SQL, churn should be calculated using logic such as:
 
+```
 last_activity_cohort_index + 3 <= max_observable_week
+```
 
 This prevents late signup cohorts from being incorrectly counted as churned.
 
-5. Event ID Must Remain Unique
+<br>
+
+### 5. Event ID Must Remain Unique
 
 Duplicate or near-duplicate tracking rows should receive a new event_id.
 
