@@ -10,7 +10,7 @@ synthetic-analytics-dataset-generator-prompts/
 │   ├── README.md
 │   ├── Dataset Prompt.md
 │   ├── Prompt Explanation.md
-│   ├── generate_saas_retention_dataset.py
+│   ├── Python Script.py
 │   └── saas_retention_events_raw.csv
 │
 ├── SaaS Funnel Analysis/
