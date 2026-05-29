@@ -1,4 +1,3 @@
-```python
 """
 Synthetic SaaS Retention & Cohort Dataset Generator (Tuned Version)
 ------------------------------------------------------------------
@@ -633,4 +632,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-```
