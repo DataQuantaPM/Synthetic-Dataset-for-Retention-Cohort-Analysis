@@ -13,19 +13,12 @@ synthetic-analytics-dataset-generator-prompts/
 │   ├── Python Script.py
 │   └── saas_retention_events_raw.csv
 │
-├── SaaS Funnel Analysis/
-│   ├── README.md
-│   ├── Dataset Prompt.md
-│   ├── Prompt Explanation.md
-│   ├── generate_saas_funnel_dataset.py
-│   └── saas_funnel_dataset.csv
-│
-└── Future Dataset Name/
+└── SaaS Funnel Analysis/
     ├── README.md
     ├── Dataset Prompt.md
     ├── Prompt Explanation.md
-    ├── generate_dataset.py
-    └── dataset.csv
+    ├── generate_saas_funnel_dataset.py
+    └── saas_funnel_dataset.csv
 ```
 
 The repository is organized by dataset case study:
@@ -71,22 +64,3 @@ The repository is organized by dataset case study:
 
   - `saas_retention_events_raw.csv`  
     Generated synthetic SaaS retention event dataset.
-
-- `Future_Dataset/`  
-  Template folder for future synthetic dataset projects.
-
-  - `README.md`  
-    Dataset-specific overview.
-
-  - `Dataset Prompt.md`  
-    Full dataset generation prompt.
-
-  - `Prompt Explanation.md`  
-    Explanation of the prompt logic.
-
-  - `generate_dataset.py`  
-    Python script used to generate the dataset.
-
-  - `dataset.csv`  
-    Generated synthetic dataset.
-
